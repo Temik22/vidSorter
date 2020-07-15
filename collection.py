@@ -1,3 +1,6 @@
+import models
+import os
+
 
 class GeneratorError(Exception):
     pass
@@ -73,32 +76,51 @@ class Collection:
             result.clear()
         return temp
 
-    def archive(col):
-        # archiving throught the pickle is useless,
-        # because Collection have another objects inside
-        print('Archiving...')
-        # with open(col.archiveName, 'wb') as f:
-        #     pickle.dump(col, f)
-        print('Archiving completed.')
+    def archive(self, file=None):
+        if file is None:
+            file = self.archiveName
+        print('Archiving to {}...'.format(file))
+        with open(file, 'w') as f:
+            f.write('{0.lastId}\n'.format(self))
+            f.write('{}\n'.format(self.freeIds))
+            for k, v in self.data.items():
+                f.write('{}\t{}\n'.format(k, v.__repr__()))
+        print('Archivation completed.')
 
-    def reload(self, file):
-        print('Reloading from {}, {}...'.format(self, file))
-        # with open(name, 'rb') as f:
-        #     col = pickle.load(f)
+    def reload(self, file=None):
+        if file is None:
+            file = self.archiveName
+        print('Reloading collection from {}...'.format(file))
+        with open(file, 'r') as f:
+            s = f.readline()
+            self.lastId = int(s)
+            s = set(list(map(int, f.readline().strip()[1:-1].split(', '))))
+            self.freeIds = s
+            s = f.readlines()
+            for el in s:
+                temp = el.strip().split('\t')
+                self.data[int(temp[0])] = models.create(temp[1:])
         print('Reloading completed.')
-        # return col
 
 
 def test():
     # a = []
     # for i in range(4):
-    #     a.append(models.Film('name' + str(i)))
+    #     a.append(models.Video('name' + str(i)))
 
-    # col = Collection()
+    col = Collection()
     # for el in a:
     #     col.add(el)
 
     # print(col)
-    # archive(col)
-    # print(a)
+    # col.remove(2)
+    # col.remove(3)
+    # print(col)
+    # col.archive()
+
+    col.reload()
+    print(col)
     print('Done')
+
+
+test()
