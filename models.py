@@ -1,3 +1,6 @@
+import os
+
+
 class Video:
     verified = False
 
@@ -11,10 +14,10 @@ class Video:
         self.path = path
 
     def __str__(self):
-        return 'Video. Name: {0.name}, Genre: {0.genre}, Seen: {0.seen}, Rate: {0.rate}'.format(self)
+        return 'Video. Name: {0.name}, Genre: {0.genre}, Seen: {0.seen}, Rate: {0.rate}, Path: {0.path}'.format(self)
 
     def __repr__(self):
-        return 'Video. Name: {0.name}, Genre: {0.genre}, Seen: {0.seen}, Rate: {0.rate}'.format(self)
+        return 'Video\t{0.name}\t{0.genre}\t{0.duration}\t{0.rate}\t{0.seen}\t{0.path}'.format(self)
 
 
 class Series:
@@ -38,6 +41,25 @@ class Series:
 
     def __str__(self):
         return 'Series. Name: {0.name}'
+
+
+def create(request):
+    if len(request) == 7:
+        if request[0] == 'Video':
+            for i in range(1, 7):
+                if request[i] == 'None':
+                    request[i] = None
+                elif i == 3:
+                    request[i] = int(request[i])
+                elif i == 4:
+                    request[i] = float(request[i])
+                elif i == 5:
+                    request[i] = bool(request[i])
+                elif i == 6:
+                    request[i] = os.path(request[i])
+            return Video(*request[1:])
+    else:
+        raise ValueError
 
 
 def test():
