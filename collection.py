@@ -59,7 +59,7 @@ class Collection:
             'name': lambda x, y: x.lower() in y.name.lower(),
             'genre': lambda x, y: x.lower() == y.genre.lower(),
             'seen': lambda x, y: x == y.seen,
-            'rate': lambda x, y: x <= y.rate
+            'rate': lambda x, y: float(x) <= y.rate
         }
         temp = self.data.copy()
         result = {}
@@ -121,6 +121,3 @@ def test():
     col.reload()
     print(col)
     print('Done')
-
-
-test()

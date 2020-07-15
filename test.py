@@ -19,9 +19,9 @@ for el in a:
 print(c)
 
 b = []
-b.append(col.searchRequest('name', 'arthur'))
-b.append(col.searchRequest('genre', 'comedy'))
-b.append(col.searchRequest('rate', 8))
+# b.append(col.searchRequest('name', 'arthur'))
+# b.append(col.searchRequest('genre', 'comedy'))
+b.append(col.searchRequest('rate', '8'))
 b.append(col.searchRequest('seen', False))
 
 result = c.search(b)
