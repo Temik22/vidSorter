@@ -21,12 +21,16 @@ class App(Frame):
         self.listUpdate(txt)
 
     def runFromList(self, event, txt):
-        print('Running file...')
-        index = txt.curselection()[0]
-        vid = self.col.getFromList(index)
-        vid.seen = True
-        vid.run()
-        self.listUpdate(txt)
+        index = txt.curselection()
+        if len(index) != 0:
+            print('Running current file...')
+            index = index[0]
+            vid = self.col.getFromList(index)
+            vid.seen = True
+            vid.run()
+            self.listUpdate(txt)
+        else:
+            print("File was not specified.")
 
     def searchWindow(self, event):
         s = Toplevel()

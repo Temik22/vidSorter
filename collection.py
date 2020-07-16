@@ -5,7 +5,6 @@ import os
 class GeneratorError(Exception):
     pass
 
-
 class searchRequest():
     def __init__(self, searchType, text):
         # request can be 4 types: name, genre, seen, rate
