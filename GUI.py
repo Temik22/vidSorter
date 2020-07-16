@@ -16,12 +16,15 @@ class App(Frame):
 
     def addFile(self, txt):
         file = fd.askopenfilename(initialdir="/")
-        s = str(file)
-        left = s.rfind('/')
-        right = s.rfind('.')
-        name = s[left + 1:right]
-        self.col.add(models.Video(name, path=file))
-        self.listUpdate(txt)
+        if file != '':
+            s = str(file)
+            left = s.rfind('/')
+            right = s.rfind('.')
+            name = s[left + 1:right]
+            self.col.add(models.Video(name, path=file))
+            self.listUpdate(txt)
+        else:
+            print('File was not specified.')
 
     def removeFile(self, txt):
         index = txt.curselection()

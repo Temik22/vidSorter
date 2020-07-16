@@ -42,6 +42,25 @@ class Video:
         return 'Video\t{0.name}\t{0.genre}\t{0.duration}\t{0.rate}\t{0.seen}\t{0.path}'.format(self)
 
 
+def create(request):
+    if len(request) == 7:
+        if request[0] == 'Video':
+            for i in range(1, 7):
+                if request[i] == 'None':
+                    request[i] = None
+                elif i == 3:
+                    request[i] = int(request[i])
+                elif i == 4:
+                    request[i] = float(request[i])
+                elif i == 5:
+                    request[i] = bool(request[i])
+                elif i == 6:
+                    request[i] = os.path.join(request[i])
+            return Video(*request[1:])
+    else:
+        raise ValueError
+
+
 class Series:
     vids = {}
     addedVids = 0
@@ -63,22 +82,3 @@ class Series:
 
     def __str__(self):
         return 'Series. Name: {0.name}'
-
-
-def create(request):
-    if len(request) == 7:
-        if request[0] == 'Video':
-            for i in range(1, 7):
-                if request[i] == 'None':
-                    request[i] = None
-                elif i == 3:
-                    request[i] = int(request[i])
-                elif i == 4:
-                    request[i] = float(request[i])
-                elif i == 5:
-                    request[i] = bool(request[i])
-                elif i == 6:
-                    request[i] = os.path.join(request[i])
-            return Video(*request[1:])
-    else:
-        raise ValueError
