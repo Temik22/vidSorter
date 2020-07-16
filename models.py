@@ -1,6 +1,9 @@
 import os
 
 
+def check(x): return x != ''
+
+
 class Video:
     verified = False
 
@@ -24,6 +27,13 @@ class Video:
             return 'x'
         else:
             return ''
+
+    def editData(self, fields):
+        # name, genre, rate, seen
+        attrs = ['name', 'genre', 'rate', 'seen']
+        for i in range(len(fields)):
+            if check(fields[i]):
+                setattr(self, attrs[i], fields[i])
 
     def __str__(self):
         return '{0.name}, genre: {0.genre}, rate: {0.rate}/10, seen: [{1}]'.format(self, self.isSeen())

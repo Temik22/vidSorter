@@ -53,10 +53,10 @@ class App(Frame):
         else:
             print("File was not specified.")
 
-    def searchWindow(self, txt):
+    def formWindow(self, txt, title, resultFunc, index):
         s = Toplevel()
         s.geometry('250x150+900+300')
-        s.title("Search")
+        s.title(title)
 
         fr1 = Frame(s)
         fr1.pack(fill=Y, side=LEFT, anchor=N)
@@ -104,7 +104,7 @@ class App(Frame):
         entrs = [ent1Var, ent2Var, ent3Var, ent4Var]
 
         okButton.bind(
-            '<Button-1>', lambda event: self.makeSearch(txt, entrs))
+            '<Button-1>', lambda event: resultFunc(txt, entrs, index))
         clearButton.bind('<Button-1>', lambda event: self.clearFields(entrs))
 
     def clearFields(self, entrs):
@@ -112,7 +112,7 @@ class App(Frame):
             entrs[i].set('')
         entrs[3].set(False)
 
-    def makeSearch(self, txt, entrs):
+    def makeSearch(self, txt, entrs, index):
         result = []
         reqs = {0: "name", 1: "genre", 2: "rate", 3: "seen"}
         for i in range(4):
@@ -128,6 +128,23 @@ class App(Frame):
         self.update = False
         self.source.clear()
         self.listUpdate(txt)
+
+    def editFile(self, txt, entrs, index):
+        print(index)
+        if len(index) != 0:
+            index = index[0]
+            if self.update:
+                vid = self.col.data[self.source[index]]
+            else:
+                vid = self.col.data[self.col.getIndexFromList(index)]
+            req = [i.get() for i in entrs]
+            if req[2] != '':
+                req[2] = float(req[2])
+            vid.editData(req)
+            self.listUpdate(txt)
+            print('File was edited successfully')
+        else:
+            print('File not specified.')
 
     def initUI(self):
         self.parent.title("App")
@@ -163,8 +180,11 @@ class App(Frame):
 
         btn1.bind('<Button-1>', lambda event: self.addFile(txt))
         btn2.bind('<Button-1>', lambda event: self.removeFile(txt))
+        btn3.bind('<Button-1>',
+                  lambda event: self.formWindow(txt, 'Edit', self.editFile, txt.curselection()))
         btn4.bind('<Button-1>', lambda event: self.runFromList(txt))
-        btn5.bind('<Button-1>', lambda event: self.searchWindow(txt))
+        btn5.bind('<Button-1>', lambda event: self.formWindow(txt,
+                                                              'Search', self.makeSearch, txt.curselection()))
         btn6.bind('<Button-1>', lambda event: self.resetFilter(txt))
 
     def listUpdate(self, txt):
