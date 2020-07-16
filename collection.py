@@ -76,6 +76,15 @@ class Collection:
             result.clear()
         return temp
 
+    def generateList(self):
+        result = []
+        for v in self.data.values():
+            result.append(str(v))
+        return result
+
+    def getFromList(self, index):
+        return list(self.data.values())[index]
+
     def archive(self, file=None):
         if file is None:
             file = self.archiveName

@@ -1,6 +1,7 @@
 import argparse
 import sys
 import collection as c
+import GUI
 
 
 def createParser():
@@ -17,12 +18,12 @@ def main():
 
     col = c.Collection()
 
-    if params.gui:
-        pass
-        # here must be function that turn on gui mode
-
     if params.imp:
         col.reload(params.imp)
+
+    if params.gui:
+        GUI.main(col)
+        # here must be function that turn on gui mode
 
 
 main()
