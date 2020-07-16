@@ -20,8 +20,14 @@ class Video:
         else:
             raise ValueError('Path is not defined')
 
+    def isSeen(self):
+        if self.seen:
+            return 'x'
+        else:
+            return ''
+
     def __str__(self):
-        return 'Video. Name: {0.name}, Genre: {0.genre}, Seen: {0.seen}, Rate: {0.rate}, Path: {0.path}'.format(self)
+        return '{0.name}, genre: {0.genre}, rate: {0.rate}/10, seen: [{1}]'.format(self, self.isSeen())
 
     def __repr__(self):
         return 'Video\t{0.name}\t{0.genre}\t{0.duration}\t{0.rate}\t{0.seen}\t{0.path}'.format(self)
@@ -70,7 +76,8 @@ def create(request):
 
 
 def test():
-    pass
+    a = Video('arthur', seen=False)
+    print(a)
     # a = Video('pidor', path=file)
 
     # a.run()
