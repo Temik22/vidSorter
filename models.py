@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 
 class Video:
@@ -12,6 +13,12 @@ class Video:
         self.seen = seen
         self.rate = rate
         self.path = path
+
+    def run(self):
+        if self.path is not None and self.path is not '':
+            subprocess.Popen(('start', self.path), shell=True)
+        else:
+            raise ValueError('Path is not defined')
 
     def __str__(self):
         return 'Video. Name: {0.name}, Genre: {0.genre}, Seen: {0.seen}, Rate: {0.rate}, Path: {0.path}'.format(self)
@@ -63,6 +70,7 @@ def create(request):
 
 
 def test():
-    s = Series('Series')
-    v = Video('Film')
-    s.add(v, 1)
+    pass
+    # a = Video('pidor', path=file)
+
+    # a.run()
