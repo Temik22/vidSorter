@@ -1,5 +1,4 @@
 import os
-import subprocess
 
 
 class Video:
@@ -16,7 +15,7 @@ class Video:
 
     def run(self):
         if self.path is not None and self.path is not '':
-            subprocess.Popen(('start', self.path), shell=True)
+            os.startfile(self.path)
         else:
             raise ValueError('Path is not defined')
 
@@ -69,15 +68,7 @@ def create(request):
                 elif i == 5:
                     request[i] = bool(request[i])
                 elif i == 6:
-                    request[i] = os.path(request[i])
+                    request[i] = os.path.join(request[i])
             return Video(*request[1:])
     else:
         raise ValueError
-
-
-def test():
-    a = Video('arthur', seen=False)
-    print(a)
-    # a = Video('pidor', path=file)
-
-    # a.run()

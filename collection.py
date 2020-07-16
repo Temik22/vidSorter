@@ -1,9 +1,9 @@
 import models
-import os
 
 
 class GeneratorError(Exception):
     pass
+
 
 class searchRequest():
     def __init__(self, searchType, text):
@@ -11,12 +11,15 @@ class searchRequest():
         self.searchType = searchType
         self.text = text
 
+    def __repr__(self):
+        return 'Request: {0.searchType}, {0.text}'.format(self)
+
 
 class Collection:
     data = {}  # data here have id as a key
     lastId = 0
     freeIds = set()
-    archiveName = 'data.mda'
+    archiveName = 'data.txt'
 
     def generateId(self):
         if len(self.freeIds) == 0:
@@ -38,7 +41,6 @@ class Collection:
         if self.data.get(index) is not None:
             del self.data[index]
             self.freeIds.add(index)
-            print(self.freeIds)
         else:
             raise ValueError('this id is unused: {}'.format(index))
 
@@ -50,30 +52,30 @@ class Collection:
         result = ';\n'.join(result)
         return '[{0}]\nlast:{1.lastId}, free: {1.freeIds}'.format(result, self)
 
-    def __repr__(self):
-        return "bla bla bla bla"
-
     def search(self, requests):
+        result = []
+        for k, v in self.data.items():
+            if self.check(requests, v):
+                result.append(k)
+
+        return result
+
+    def check(self, requests, current):
         searchFuncs = {
             'name': lambda x, y: x.lower() in y.name.lower(),
             'genre': lambda x, y: x.lower() == y.genre.lower(),
             'seen': lambda x, y: x == y.seen,
             'rate': lambda x, y: float(x) <= y.rate
         }
-        temp = self.data.copy()
-        result = {}
-        for request in requests:
-            if request.__class__ == searchRequest:
-                func = searchFuncs[request.searchType]
-                for k, v in temp.items():
-                    if func(request.text, v):
-                        result[k] = v
+        count = 0
+        for req in requests:
+            if req.__class__ == searchRequest:
+                if searchFuncs[req.searchType](req.text, current):
+                    count += 1
             else:
                 raise ValueError(
                     'Search method get wrong type of request: need to be class searchRequest')
-            temp = result.copy()
-            result.clear()
-        return temp
+        return count == len(requests)
 
     def generateList(self):
         result = []
@@ -81,8 +83,8 @@ class Collection:
             result.append(str(v))
         return result
 
-    def getFromList(self, index):
-        return list(self.data.values())[index]
+    def getIndexFromList(self, index):
+        return list(self.data.keys())[index]
 
     def archive(self, file=None):
         if file is None:
@@ -95,37 +97,18 @@ class Collection:
                 f.write('{}\t{}\n'.format(k, v.__repr__()))
         print('Archivation completed.')
 
-    def reload(self, file=None):
-        if file is None:
-            file = self.archiveName
-        print('Reloading collection from {}...'.format(file))
-        with open(file, 'r') as f:
-            s = f.readline()
-            self.lastId = int(s)
-            s = set(list(map(int, f.readline().strip()[1:-1].split(', '))))
-            self.freeIds = s
-            s = f.readlines()
-            for el in s:
-                temp = el.strip().split('\t')
-                self.data[int(temp[0])] = models.create(temp[1:])
+    def reload(self, f):
+        print('Reloading collection from {}...'.format(f.name))
+        s = f.readline()
+        self.lastId = int(s)
+        s = f.readline()
+        if s.strip() == 'set()':
+            s = set()
+        else:
+            s = set(list(map(int, s.strip()[1:-1].split(', '))))
+        self.freeIds = s
+        s = f.readlines()
+        for el in s:
+            temp = el.strip().split('\t')
+            self.data[int(temp[0])] = models.create(temp[1:])
         print('Reloading completed.')
-
-
-def test():
-    # a = []
-    # for i in range(4):
-    #     a.append(models.Video('name' + str(i)))
-
-    col = Collection()
-    # for el in a:
-    #     col.add(el)
-
-    # print(col)
-    # col.remove(2)
-    # col.remove(3)
-    # print(col)
-    # col.archive()
-
-    col.reload()
-    print(col)
-    print('Done')
